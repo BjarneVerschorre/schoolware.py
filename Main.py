@@ -15,7 +15,7 @@ def richify(text:str, colour:str) -> str:
     return f'[{colour}]{text}[/{colour}]'
 
 def get_agenda(days:int = 7, rich:bool = False) -> dict:
-    datum_vandaag = str(datetime.now()+timedelta(days=1)).split(' ')[0]
+    datum_vandaag = str(datetime.now()).split(' ')[0]
     datum_vandaag = datetime.strptime(datum_vandaag, "%Y-%m-%d")
     
     
@@ -37,20 +37,26 @@ def get_agenda(days:int = 7, rich:bool = False) -> dict:
             titel = agenda_punt['Titel']
             lokaal = agenda_punt['LokaalCode']
             type_punt = agenda_punt['TypePunt']
-            van = agenda_punt['Van'].split(' ')[1]
+            
+            van = ''.join(agenda_punt['Van'].split(' ')[1])
+            van_tijd = ':'.join(van.split(':')[:-1])
+
+            tot = ''.join(agenda_punt['Tot'].split(' ')[1])
+            tot_tijd = ':'.join(tot.split(':')[:-1])
             
             if type_punt > 2:
                 titel = f'[{richify("TOETS", "bold red") if rich else "TOETS"}]: {titel}'
 
 
-            if not van in rooster[datum]:
-                rooster[datum][van] = {
+            if not f'{van_tijd}-{tot_tijd}' in rooster[datum]:
+                rooster[datum][f'{van_tijd}-{tot_tijd}'] = {
                     'Vak': vak_naam,
                     'Onderwerp': 'Geen onderwerp',
                     'Lokaal': lokaal if lokaal else 'Geen lokaal',
                 }
             else:
-                pass
+                if not titel == vak_naam:
+                    rooster[datum][f'{van_tijd}-{tot_tijd}']['Onderwerp'] = titel
 
         
     return rooster 
