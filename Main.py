@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import requests
 from rich import print as rprint
 
-AA = '67B820A1-EAE5-43D5-A5C1-196FE3E4EE3F'
+AA = 'F1A76D54-7A4B-4608-85B2-E38EC3A96D04'
 
 
 def valid_token(token:str) -> bool:
@@ -19,35 +19,39 @@ def get_agenda(days:int = 7, rich:bool = False) -> dict:
     datum_vandaag = datetime.strptime(datum_vandaag, "%Y-%m-%d")
     
     
-    
     rooster = {}
     
     for dag in range(days):
-        rooster[dag] = {}
-        
         res = requests.get(f'https://vlot-leerlingen.durme.be/bin/server.fcgi/REST/AgendaPunt/?MinTot={datum_vandaag+timedelta(days=dag)}&MaxVan={datum_vandaag+timedelta(days=dag+1)}', cookies={'FPWebSession': AA})
         res_data = res.json()['data']
-    
+
+        datum = str(datum_vandaag+timedelta(days=dag)).split(' ')[0]
+        rooster[datum] = {}
+
         for agenda_punt in res_data:
             if not 'W5IN' in agenda_punt['Groep']:
                 continue
+
             
             vak_naam = agenda_punt['VakNaam']
             titel = agenda_punt['Titel']
             lokaal = agenda_punt['LokaalCode']
             type_punt = agenda_punt['TypePunt']
+            van = agenda_punt['Van'].split(' ')[1]
             
             if type_punt > 2:
                 titel = f'[{richify("TOETS", "bold red") if rich else "TOETS"}]: {titel}'
-            
-            if not vak_naam in rooster[dag]:
-                rooster[dag][vak_naam] = {
+
+
+            if not van in rooster[datum]:
+                rooster[datum][van] = {
+                    'Vak': vak_naam,
                     'Onderwerp': 'Geen onderwerp',
                     'Lokaal': lokaal if lokaal else 'Geen lokaal',
                 }
             else:
-                if not titel == vak_naam:
-                    rooster[dag][vak_naam]['Onderwerp'] = titel
+                pass
+
         
     return rooster 
 
@@ -58,7 +62,7 @@ def main():
         exit(1)
     rprint(f'[[bold green]Success[/bold green]] Valid token!')
 
-    agenda = get_agenda(2, True)
+    agenda = get_agenda(1, True)
     
     rprint(json.dumps(agenda, indent=4))
     
