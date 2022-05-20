@@ -17,7 +17,20 @@ Clone the repository and install the requirements
   cd schoolware.py
   pip3 install -r requirements.txt
 ```
-    
+
+## Usage/Examples
+
+```py
+import json
+from datetime import datetime
+from SchoolWare import SchoolWare
+
+SW = SchoolWare("XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", "W5IN")
+
+agenda = SW.get_agenda(datetime(2022, 5, 19), datetime(2022, 5, 21))
+print(json.dumps(agenda, indent=4))
+```
+
 ## Features
 
 - [ ]  Get agenda items
