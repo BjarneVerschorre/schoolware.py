@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import requests
 from rich import print as rprint
 
-AA = 'F1A76D54-7A4B-4608-85B2-E38EC3A96D04'
+TOKEN = 'F1A76D54-7A4B-4608-85B2-E38EC3A96D04'
 
 
 def valid_token(token:str) -> bool:
@@ -22,7 +22,7 @@ def get_agenda(days:int = 7, rich:bool = False) -> dict:
     rooster = {}
     
     for dag in range(days):
-        res = requests.get(f'https://vlot-leerlingen.durme.be/bin/server.fcgi/REST/AgendaPunt/?MinTot={datum_vandaag+timedelta(days=dag)}&MaxVan={datum_vandaag+timedelta(days=dag+1)}', cookies={'FPWebSession': AA})
+        res = requests.get(f'https://vlot-leerlingen.durme.be/bin/server.fcgi/REST/AgendaPunt/?MinTot={datum_vandaag+timedelta(days=dag)}&MaxVan={datum_vandaag+timedelta(days=dag+1)}', cookies={'FPWebSession': TOKEN})
         res_data = res.json()['data']
 
         datum = str(datum_vandaag+timedelta(days=dag)).split(' ')[0]
@@ -63,7 +63,7 @@ def get_agenda(days:int = 7, rich:bool = False) -> dict:
 
 
 def main():
-    if not valid_token(AA):
+    if not valid_token(TOKEN):
         rprint(f'[[bold red]Failed[/bold red]] Invalid token!')
         exit(1)
     rprint(f'[[bold green]Success[/bold green]] Valid token!')
