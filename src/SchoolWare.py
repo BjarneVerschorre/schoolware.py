@@ -1,14 +1,13 @@
 import json
 from datetime import datetime, timedelta
 import requests
-from rich import print as rprint
 
 class SchoolWare():
-    def __init__(self, token:str, _class:str) -> None:
+    def __init__(self, token:str) -> None:
         self.token = token
         if not self.__valid_token():
             raise ValueError("Token is invalid")  
-        self._class = _class
+        self._class = self.get_klas()
 
     def get_agenda(self, start:datetime, end:datetime) -> dict:
         """ Get the agenda from the schoolware """
@@ -49,7 +48,19 @@ class SchoolWare():
                 
         return rooster
 
-
+    def get_klas(self) -> str:
+        res = self.__send_request(f'https://vlot-leerlingen.durme.be/bin/server.fcgi/REST/PuntenbladGrid?BeoordelingMomentVan={datetime.now()-timedelta(weeks=9)}&BeoordelingMomentTot={datetime.now()}')
+        res_data = res.json()
+        
+        try:
+            _class =  res_data['data'][0]['KlasCode']
+        except KeyError:
+            raise ValueError("Unable to find class")
+        return _class
+    
+    def __send_request(self, url:str) -> any:
+        return requests.get(url, cookies={'FPWebSession': self.token})
+    
     def __valid_token(self) -> bool:
         """ Checks if the token is valid """
         res = requests.get('https://vlot-leerlingen.durme.be/bin/server.fcgi/REST/myschoolwareaccount', cookies={'FPWebSession': self.token})
