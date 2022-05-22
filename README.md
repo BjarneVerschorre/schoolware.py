@@ -32,7 +32,7 @@ print(json.dumps(agenda, indent=2))
 
 ## Features
 
-- [*]  Get agenda items
+- [x]  Get agenda items
 - [ ]  Get scores
 
 
