@@ -39,5 +39,5 @@ print(json.dumps(agenda, indent=2))
 ## Authors
 
 - [@bjarneverschorre](https://www.github.com/bjarneverschorre)
-
+- [@YajPinkNinja](https://www.github.com/YajPinkNinja)
 
