@@ -109,7 +109,7 @@ class SchoolWare():
         else:
             onderwerp += ' ' + commentaar.replace('<br>', ' ').replace('\n', ' ')
         
-        if onderwerp[-1] == ' ':
+        if onderwerp != '' and onderwerp[-1] == ' ':
             onderwerp = onderwerp[:-1]
         
         return onderwerp
