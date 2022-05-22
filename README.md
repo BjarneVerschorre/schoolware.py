@@ -6,7 +6,7 @@ An API wrapper for the SchoolWareAPI made in Python.
 
 
 
-![Logo](https://vlot-leerlingen.durme.be/css/theme/default/img/wisa/login/login_logo.jpg)
+![Logo](https://www.wisa.be/webouders/images/schoolwareLogo.png)
 
 ## Installation
 
@@ -22,18 +22,17 @@ Clone the repository and install the requirements
 
 ```py
 import json
-from datetime import datetime
 from SchoolWare import SchoolWare
 
-SW = SchoolWare("XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX", "W5IN")
+SW = SchoolWare("XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX") # Your SchoolWare Token
 
-agenda = SW.get_agenda(datetime(2022, 5, 19), datetime(2022, 5, 21))
-print(json.dumps(agenda, indent=4))
+agenda = SW.get_agenda()
+print(json.dumps(agenda, indent=2))
 ```
 
 ## Features
 
-- [ ]  Get agenda items
+- [*]  Get agenda items
 - [ ]  Get scores
 
 

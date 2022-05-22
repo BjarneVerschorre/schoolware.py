@@ -1,10 +1,9 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.0'
+VERSION = '0.0.2'
 DESCRIPTION = 'A SchoolWare Wrapper writen in Python'
 LONG_DESCRIPTION = open("README.md").read()
 
-# Setting up
 setup(
     name="schoolware",
     version=VERSION,
@@ -23,5 +22,8 @@ setup(
         "Operating System :: Unix",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
-    ]
+    ],
+    project_urls={
+        'Tracker': 'https://github.com/BjarneVerschorre/schoolware.py/issues',
+    }
 )
