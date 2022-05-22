@@ -1,7 +1,7 @@
 from src.SchoolWare import SchoolWare
 import json
 
-SW = SchoolWare('8ABC8C6A-8FAB-4AB4-AD7A-98249692588E')
+SW = SchoolWare('XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX')
 agenda = SW.get_agenda()
 agenda = json.dumps(agenda, indent=2, ensure_ascii=False)
 
