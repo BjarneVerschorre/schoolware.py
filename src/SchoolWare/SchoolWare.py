@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import datetime, timedelta
 import requests
 
@@ -33,12 +34,11 @@ class SchoolWare():
             while self.__weekdays.index(from_weekday) > 4:
                 from_date += timedelta(days=1)
                 from_weekday = self.__weekdays[from_date.weekday()]
-                
         else:
             from_date = datetime.strptime(from_date, "%Y-%m-%d")
-            
+
         if end_date is None:
-            end_date = from_date+timedelta(days=1)
+            end_date = from_date + timedelta(days=1)
         else:
             end_date = datetime.strptime(end_date, "%Y-%m-%d")
             
@@ -53,17 +53,15 @@ class SchoolWare():
         """ Filter the agenda to only show the current class """
         
         rooster = {}
-        temp = {}
         
         for item in agenda:
             if not self._class in item['Groep']:
                 continue
             
-            item_date = item['Van'].split(' ')[0]
             vak_name = item['VakNaam']
             teacher_name = item['PersoneelNaam']
             lokaal = item['LokaalCode']
-            start_time = item['Van'].split(' ')[1]
+            item_date, start_time = item['Van'].split(' ')
             end_time = item['Tot'].split(' ')[1]
             titel = item['Titel']
             commentaar = item['Commentaar']
@@ -77,6 +75,7 @@ class SchoolWare():
             if str(les_uur) in rooster[item_date]:
                 if rooster[item_date][str(les_uur)]['van'] == start_time:
                     vorig_onderwerp = rooster[item_date][str(les_uur)]['onderwerp']
+                    
                     if vorig_onderwerp == 'Geen onderwerp' or vorig_onderwerp == "":
                         rooster[item_date][str(les_uur)]['onderwerp'] = self.__get_onderwerp(titel, commentaar, vak_name)
                     continue
@@ -90,29 +89,24 @@ class SchoolWare():
                 'van': start_time,
                 'tot': end_time,
             }
-            temp[start_time] = str(les_uur)
             
         return rooster
         
     def __get_onderwerp(self, titel:str, commentaar:str, vak_name:str) -> str:
-        onderwerp = ''
-        if titel != vak_name:
-            onderwerp = titel
-            
+        onderwerp = '' if  titel == vak_name else titel
+
         try:
             commentaar = json.loads(commentaar)['leerlingen']
         except json.decoder.JSONDecodeError:
             pass
+
+        if commentaar != '':
+            commentaar = re.sub(re.compile('<.*?>'), ' ', commentaar)
         
-        if onderwerp == '':
-            onderwerp = commentaar
-        else:
-            onderwerp += ' ' + commentaar.replace('<br>', ' ').replace('\n', ' ')
+        # str.strip() will take care of the whitespace
+        onderwerp += ' ' + commentaar
         
-        if onderwerp != '' and onderwerp[-1] == ' ':
-            onderwerp = onderwerp[:-1]
-        
-        return onderwerp
+        return onderwerp.strip()
     
     def get_information(self) -> dict:
         """ Get yours personal information from schoolware """
